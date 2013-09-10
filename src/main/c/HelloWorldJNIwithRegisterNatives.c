@@ -32,11 +32,11 @@ dictionary *dictionary_new (void){
 }
 
 static void dictionary_add_keyval(dictionary *in, keyval *kv){
-  printf("val %i \n",*(int*)kv->value);
+  // printf("val %i \n",*(int*)kv->value);
   in->length++;
   in->pairs = realloc(in->pairs, sizeof(keyval*) * in->length);
   in->pairs[in->length-1] = kv;
-  printf("val %i \n",*(int*)in->pairs[in->length-1]->value);
+  //  printf("val %i \n",*(int*)in->pairs[in->length-1]->value);
 }
 
 void dictionary_free(dictionary *in){

@@ -31,10 +31,20 @@ object HelloWorldJNIwithRegisterNatives {
   @native
   def find_dictionary(key:String): Int
 
+  def time[A](f: => A) = {
+  val s = System.nanoTime
+  val ret = f
+  println("time: "+(System.nanoTime-s)/1e6+"ms")
+  ret
+}
+
   def main(args: Array[String]) {
-    println(hello + ", 5 + 5 = " + add(5,5))
+   // println(hello + ", 5 + 5 = " + add(5,5))
     load_dictionary()
-    add_dictionary("1",1)
+
+    (1 to 1000).map{ i=>
+      add_dictionary(i.toString,i+1)
+    }
     println(find_dictionary("1"))
     free_dictionary()
   }
