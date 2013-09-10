@@ -102,8 +102,9 @@ static JNINativeMethod HelloWorldMethods[] = {
     {"add", "(II)I", (void*)add},
   {"badd", "(II)I", (void*)badd},
   {"load_dictionary","()V",(void*)load_dictionary},
-  {"free_dictionary","()V",(void*)free_dictionary}
-
+  {"free_dictionary","()V",(void*)free_dictionary},
+  {"add_dictionary","(Ljava/lang/String;I)V",(void*)add_dictionary},
+  {"find_dictionary","(Ljava/lang/String;)I",(void*)find_dictionary}
    
    //    {"load_dictionary","()",(void*)load_dictionary},
    // {"add_dictionary","(Ljava/lang/String;I)V",(void*)add_dictionary},

@@ -25,6 +25,11 @@ object HelloWorldJNIwithRegisterNatives {
   @native 
   def free_dictionary()
   
+  @native
+  def add_dictionary(key:String, value:Int)
+  
+  @native
+  def find_dictionary(key:String): Int
 
   def main(args: Array[String]) {
     println(hello + ", 5 + 5 = " + add(5,5))

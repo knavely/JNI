@@ -19,7 +19,7 @@ all: $(C_SO)
 $(C_SO): $(C_OBJ) $(SODIR)
 	gcc -fPIC -shared -o $@ $(C_OBJ)
 $(C_OBJ): $(C_SRC) $(HEADERS) $(OBJDIR)
-	gcc -fPIC -c -O -o $@ $(INCLUDE) $(C_SRC)
+	gcc -std=c99 -fPIC -c -O -o $@ $(INCLUDE) $(C_SRC)
 
 $(OBJDIR):
 	mkdir $(OBJDIR)
