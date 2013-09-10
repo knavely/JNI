@@ -32,9 +32,11 @@ dictionary *dictionary_new (void){
 }
 
 static void dictionary_add_keyval(dictionary *in, keyval *kv){
+  printf("val %i \n",*(int*)kv->value);
   in->length++;
   in->pairs = realloc(in->pairs, sizeof(keyval*) * in->length);
   in->pairs[in->length-1] = kv;
+  printf("val %i \n",*(int*)in->pairs[in->length-1]->value);
 }
 
 void dictionary_free(dictionary *in){
@@ -45,14 +47,17 @@ void dictionary_free(dictionary *in){
 
 void dictionary_add(dictionary *in, char *key, void *value){
   if(!key){fprintf(stderr, "NULL is not a valid key.\n"); abort();}
+  //printf("%i\n",*(int*)value);
   dictionary_add_keyval(in,keyval_new(key,value));
 }
 
 void *dictionary_find(dictionary const *in, char const *key){
   for(int i = 0; i < in->length; ++i)
     if(keyval_matches(in->pairs[i], key))
-      return in->pairs[i]->value; 
-
+      {
+	//printf("%i",*(int*)in->pairs[i]->value);
+	return in->pairs[i]->value; 
+      }
   return dictionary_not_found;
 } 
 
@@ -77,7 +82,8 @@ JNIEXPORT jint JNICALL badd(JNIEnv * env, jobject obj, jint value1, jint value2)
 }
 
 JNIEXPORT jint JNICALL find_dictionary(JNIEnv * env, jobject j, jstring key){
-  return *(int*)dictionary_find(dict,(*env)->GetStringUTFChars(env,key,0)); 
+  // printf("%i",*(int*)dictionary_find(dict,(*env)->GetStringUTFChars(env,key,0)));
+  return *(jint*)dictionary_find(dict,(*env)->GetStringUTFChars(env,key,0)); 
 }
 
 JNIEXPORT void JNICALL load_dictionary(JNIEnv *env, jobject j){
@@ -85,7 +91,10 @@ JNIEXPORT void JNICALL load_dictionary(JNIEnv *env, jobject j){
 }
 
 JNIEXPORT void JNICALL add_dictionary(JNIEnv *env, jobject j, jstring key, jint val){
-  dictionary_add(dict,(*env)->GetStringUTFChars(env,key,0), &val);
+  int* v = malloc(sizeof(int));
+  *v = (int)val;
+  //printf("vvv %i \n",*v);
+  dictionary_add(dict,(*env)->GetStringUTFChars(env,key,0), v);
 }
 
 JNIEXPORT void JNICALL free_dictionary(JNIEnv *env, jobject j){

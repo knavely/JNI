@@ -34,6 +34,8 @@ object HelloWorldJNIwithRegisterNatives {
   def main(args: Array[String]) {
     println(hello + ", 5 + 5 = " + add(5,5))
     load_dictionary()
+    add_dictionary("1",1)
+    println(find_dictionary("1"))
     free_dictionary()
   }
 }
