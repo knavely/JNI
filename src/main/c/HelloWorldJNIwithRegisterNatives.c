@@ -1,22 +1,114 @@
 #include "HelloWorldJNIwithRegisterNatives.h"
+#include <stdlib.h>
+#include <strings.h>
 
-jstring JNICALL hello(JNIEnv * env, jobject obj) {
-  return (*env)->NewStringUTF(env, "Hello World!");
+ dictionary * dict;
+void *dictionary_not_found;
+// functions keyval -------------
+keyval *keyval_new(char *key, void *value){
+  keyval * out = malloc(sizeof(keyval));
+  *out = (keyval){.key = key, .value = value};
+  return out;
+} 
+
+keyval *keyval_copy(keyval const *in){
+  keyval * out = malloc(sizeof(keyval));
+  *out = *in;
+  return out;
 }
 
-jint JNICALL add(JNIEnv * env, jobject obj, jint value1, jint value2) {
+void keyval_free(keyval *in) { free(in);}
+
+int keyval_matches(keyval const *in, char const *key){
+  return !strcasecmp(in->key,key);
+}
+// --------------------Dictionary--------
+dictionary *dictionary_new (void){
+  static int dnf;
+  if(!dictionary_not_found) dictionary_not_found = &dnf;
+  dictionary *out = malloc(sizeof(dictionary));
+  *out = (dictionary){ }; 
+  return out;
+}
+
+static void dictionary_add_keyval(dictionary *in, keyval *kv){
+  in->length++;
+  in->pairs = realloc(in->pairs, sizeof(keyval*) * in->length);
+  in->pairs[in->length-1] = kv;
+}
+
+void dictionary_free(dictionary *in){
+  for(int i = 0; i < in->length; ++i)
+    keyval_free(in->pairs[i]);
+  free(in);
+}
+
+void dictionary_add(dictionary *in, char *key, void *value){
+  if(!key){fprintf(stderr, "NULL is not a valid key.\n"); abort();}
+  dictionary_add_keyval(in,keyval_new(key,value));
+}
+
+void *dictionary_find(dictionary const *in, char const *key){
+  for(int i = 0; i < in->length; ++i)
+    if(keyval_matches(in->pairs[i], key))
+      return in->pairs[i]->value; 
+
+  return dictionary_not_found;
+} 
+
+dictionary *dictionary_copy(dictionary *in){
+  dictionary *out = dictionary_new();
+  for(int i = 0; i < in->length; ++i)
+    dictionary_add_keyval(out,keyval_copy(in->pairs[i]));
+  return out;
+}
+//---------------------------------JNI Interface
+
+JNIEXPORT jstring JNICALL hello(JNIEnv * env, jobject obj) {
+  return (*env)->NewStringUTF(env, "Hello World asdk;lsad;lk;kls!");
+}
+
+JNIEXPORT jint JNICALL add(JNIEnv * env, jobject obj, jint value1, jint value2) {
   return (value1 + value2);
 }
 
-// -----------------------------------------------------------------------------
+JNIEXPORT jint JNICALL badd(JNIEnv * env, jobject obj, jint value1, jint value2) {
+  return (value1 + value2);
+}
 
+JNIEXPORT jint JNICALL find_dictionary(JNIEnv * env, jobject j, jstring key){
+  return *(int*)dictionary_find(dict,(*env)->GetStringUTFChars(env,key,0)); 
+}
+
+JNIEXPORT void JNICALL load_dictionary(JNIEnv *env, jobject j){
+  dict = dictionary_new();
+}
+
+JNIEXPORT void JNICALL add_dictionary(JNIEnv *env, jobject j, jstring key, jint val){
+  dictionary_add(dict,(*env)->GetStringUTFChars(env,key,0), &val);
+}
+
+JNIEXPORT void JNICALL free_dictionary(JNIEnv *env, jobject j){
+  dictionary_free(dict);
+}
+
+//---------------
 /*
  * Table of methods associated with the DrmRawContent class.
  */
 static JNINativeMethod HelloWorldMethods[] = {
     /* name, signature, funcPtr */
-    {"hello", "()Ljava/lang/String;", (void*)hello},
+  {"hello", "()Ljava/lang/String;", (void*)hello},
     {"add", "(II)I", (void*)add},
+  {"badd", "(II)I", (void*)badd},
+  {"load_dictionary","()V",(void*)load_dictionary},
+  {"free_dictionary","()V",(void*)free_dictionary}
+
+   
+   //    {"load_dictionary","()",(void*)load_dictionary},
+   // {"add_dictionary","(Ljava/lang/String;I)V",(void*)add_dictionary},
+  //{"find","()Ljava/lang/String;",(void*)find}
+   // {"free_dictionary", "()V",(void*)free_dictionary},
 };
 
 /*
@@ -42,8 +134,7 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
  */
 static int registerNatives(JNIEnv* env)
 {
-  if (!registerNativeMethods(env, "org/digimead/HelloWorldJNIwithRegisterNatives$",
-        HelloWorldMethods, sizeof(HelloWorldMethods) / sizeof(HelloWorldMethods[0])))
+  if (!registerNativeMethods(env, "org/digimead/HelloWorldJNIwithRegisterNatives$",HelloWorldMethods,sizeof(HelloWorldMethods) / sizeof(HelloWorldMethods[0])))
     return JNI_FALSE;
 
   return JNI_TRUE;
