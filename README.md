@@ -1,7 +1,8 @@
-Branched from HelloWorldJNIwithRegisterNatives
+JNI Scala experiments
 =============
+this was branched from the super helpful HelloWorldJNIwithRegisterNatives which got me started with JNI.
 
-comparing scala mutable Map and other data structures with native implementations
+Comparing scala mutable Map and other data structures with native implementations
 How to build / run
 ------------
 
