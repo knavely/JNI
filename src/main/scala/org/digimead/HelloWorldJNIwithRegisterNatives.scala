@@ -38,13 +38,18 @@ object HelloWorldJNIwithRegisterNatives {
   ret
 }
 
+  import scala.collection.mutable._
+
   def main(args: Array[String]) {
    // println(hello + ", 5 + 5 = " + add(5,5))
+    val mMap = Map.empty[String,Int]
+
+    time{ (1 to 100000).map( i => mMap(i.toString) = i+1 ) }
+
     load_dictionary()
 
-    (1 to 1000).map{ i=>
-      add_dictionary(i.toString,i+1)
-    }
+    time{ (1 to 100000).map{ i=> add_dictionary(i.toString,i+1)} }
+
     println(find_dictionary("1"))
     free_dictionary()
   }
