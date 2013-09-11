@@ -19,6 +19,9 @@ object HelloWorldJNIwithRegisterNatives {
   def badd(a: Int, b: Int): Int
  
   @native 
+  def sum_dictionary():Int
+  
+  @native
   def load_dictionary()
   
   @native 
@@ -71,6 +74,21 @@ object HelloWorldJNIwithRegisterNatives {
     time{ (1 to 100).foreach{ i => mMap(i.toString) } }
   
     time{ (1 to 100).foreach{ i => index.count(i.toString)}}
+    
+    time{ mMap.foldLeft(0)((acc,x) => acc + x._2)}
+
+    time{ sum_dictionary()}
+
+    time{
+      var sum:Int = 0
+      var ii:Int = 0
+      while(ii < a.length) 
+        {
+          sum = sum + a(ii)
+          ii = ii + 1
+        }
+    }
+
     println(find_dictionary("1"))
     free_dictionary()
   }

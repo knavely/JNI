@@ -51,6 +51,15 @@ void dictionary_add(dictionary *in, char *key, void *value){
   dictionary_add_keyval(in,keyval_new(key,value));
 }
 
+int dictionary_sum(dictionary *in){
+  int i = 0;
+  int sum = 0;
+
+  while(i < in->length)
+    {
+      sum += in->pairs[i++]->value; 
+    }
+}
 void *dictionary_find(dictionary const *in, char const *key){
   for(int i = 0; i < in->length; ++i)
     if(keyval_matches(in->pairs[i], key))
@@ -68,6 +77,11 @@ dictionary *dictionary_copy(dictionary *in){
   return out;
 }
 //---------------------------------JNI Interface
+
+
+JNIEXPORT jint JNICALL sum_dictionary(JNIEnv * env, jobject obj) {
+  return dictionary_sum(dict);
+}
 
 JNIEXPORT jstring JNICALL hello(JNIEnv * env, jobject obj) {
   return (*env)->NewStringUTF(env, "Hello World asdk;lsad;lk;kls!");
@@ -113,7 +127,9 @@ static JNINativeMethod HelloWorldMethods[] = {
   {"load_dictionary","()V",(void*)load_dictionary},
   {"free_dictionary","()V",(void*)free_dictionary},
   {"add_dictionary","(Ljava/lang/String;I)V",(void*)add_dictionary},
-  {"find_dictionary","(Ljava/lang/String;)I",(void*)find_dictionary}
+  {"find_dictionary","(Ljava/lang/String;)I",(void*)find_dictionary},
+  {"sum_dictionary","()I",(void*)sum_dictionary}
+  
    
    //    {"load_dictionary","()",(void*)load_dictionary},
    // {"add_dictionary","(Ljava/lang/String;I)V",(void*)add_dictionary},
