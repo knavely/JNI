@@ -7,8 +7,7 @@ object HelloWorldJNIwithRegisterNatives {
     System.load(libname)
   else {
     println("java.library.path: " + System.getProperty("java.library.path"))
-    System.loadLibrary("HelloWorldJNIwithRegisterNatives")
-    
+    System.loadLibrary("HelloWorldJNIwithRegisterNatives")    
   }
 
   @native
@@ -39,17 +38,39 @@ object HelloWorldJNIwithRegisterNatives {
 }
 
   import scala.collection.mutable._
-
+  import org.saddle._
+ 
   def main(args: Array[String]) {
    // println(hello + ", 5 + 5 = " + add(5,5))
     val mMap = Map.empty[String,Int]
 
-    time{ (1 to 100000).map( i => mMap(i.toString) = i+1 ) }
+    var a = Array[Int]((1 to 1000000):_*)
+    
+     var b = Array[String]( (1 to 1000000).map(i => (i.toString)):_*)
+    
+
+    val index = Index[String](b)
+
+    //(1 to 1000000).map( i => index(i.toString) = i+1)
+    println(index("1")(0))
+ //Index.make(Vec(Array((1 to 1000000).map(i => i.toString))), 
+      //Vec(Array(1 to 1000000)))
+
+    time{ (1 to 1000000).map( i => mMap(i.toString) = i+1 ) }
 
     load_dictionary()
 
-    time{ (1 to 100000).map{ i=> add_dictionary(i.toString,i+1)} }
+    time{ (1 to 1000000).map{ i=> add_dictionary(i.toString,i+1)} }
 
+//    time{ (1 to 1000000).foreach{ i => find_dictionary(i.toString) } }
+   
+    
+    time{ (1 to 100).foreach(i => find_dictionary(i.toString))}
+    
+
+    time{ (1 to 100).foreach{ i => mMap(i.toString) } }
+  
+    time{ (1 to 100).foreach{ i => index.count(i.toString)}}
     println(find_dictionary("1"))
     free_dictionary()
   }
