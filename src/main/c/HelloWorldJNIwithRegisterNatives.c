@@ -1,6 +1,7 @@
 #include "HelloWorldJNIwithRegisterNatives.h"
 #include <stdlib.h>
 #include <strings.h>
+#include <string.h>
 
  dictionary * dict;
 void *dictionary_not_found;
@@ -60,6 +61,7 @@ int dictionary_sum(dictionary *in){
       sum += in->pairs[i++]->value; 
     }
 }
+
 void *dictionary_find(dictionary const *in, char const *key){
   for(int i = 0; i < in->length; ++i)
     if(keyval_matches(in->pairs[i], key))
@@ -76,6 +78,77 @@ dictionary *dictionary_copy(dictionary *in){
     dictionary_add_keyval(out,keyval_copy(in->pairs[i]));
   return out;
 }
+
+int compare(char* v1, char* v2)
+{
+  if( strlen(v1) > strlen(v2)) return 1;
+  if(strlen(v2) > strlen(v1)) return 0;
+
+  int i = 0;
+  while(v1[i] == v2[i]) ++i;
+  (v1[i] >= v2[i]) ? 1 : 0; 
+}
+
+int pivot(keyval ** array, int start, int end)
+{
+  int p = start;
+  int s = start+1;
+  int e = end-1;
+  keyval * temp = keyval_copy(array[0]);
+  
+  for(int i = s; i < end ; ++i)
+    {
+      if( compare(array[s]->key , array[p]->key) && 
+	  compare(array[e]->key , array[p]->key) )
+	{
+	  *temp = *array[e];
+	  *array[e] = *array[s];
+	  *array[s] = *temp;
+	  
+	  ++s; --e;
+	}
+
+      else{
+	if(compare(array[s]->key , *(int*)array[p]->key)) ++s;
+	if(compare(array[e]->key , array[p]->key)) --e;
+      }
+    }
+  *temp = *array[p];
+  *array[p] = *array[s];
+  *array[s] = *temp;
+
+  free(temp);
+  return s;
+}
+
+keyval ** qSort(keyval **array, int start, int end)
+{
+  if(start < end)
+    {
+      int p = pivot(array,start,end);
+      qSort(array,start,p-1);
+      qSort(array,p+1,end);
+    }
+  return array;
+}
+
+int binary_search(keyval ** array, int start, int end, char * key)
+{
+  if(end < start) return -1;
+  
+  else{
+    int i = (end - start)/2 + start;
+    if(strcmp(key,array[i]->key)) return i;
+
+    else if(compare(key,array[i]-> key)) return binary_search(array,i+1,end,key);
+    else if(!compare(key,array[i]->key)) return binary_search(array,start,i-1,key);
+  }
+}
+
+void dictionary_sort(dictionary *in){
+  qSort(in->pairs,0,in->length);
+}
+
 //---------------------------------JNI Interface
 
 

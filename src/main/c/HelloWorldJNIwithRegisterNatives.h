@@ -24,8 +24,9 @@ dictionary *dictionary_copy(dictionary *in);
 void dictionary_free(dictionary *in);
 void dictionary_add(dictionary *in, char *key, void *value); 
 void *dictionary_find(dictionary const *in, char const *key); 
-
-
+void dictionary_sort(dictionary *in);
+int pivot(keyval ** array, int start, int end);
+keyval ** qSort(keyval **array, int start, int end);
 //-------------------
 #ifdef __cplusplus
 extern "C" {
