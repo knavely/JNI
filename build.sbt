@@ -62,6 +62,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scala-saddle" %% "saddle-core" % "1.3.+"
+  "org.scala-saddle" %% "saddle-core" % "1.3.+",
+  "net.sf.trove4j" % "trove4j" % "3.0.3"
   // (OPTIONAL) "org.scala-saddle" %% "saddle-hdf5" % "1.3.+"
 )

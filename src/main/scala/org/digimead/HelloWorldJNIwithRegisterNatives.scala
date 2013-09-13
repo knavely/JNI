@@ -1,4 +1,6 @@
 package org.digimead
+import scala.collection.JavaConversions._
+import gnu.trove.map.hash._
 
 object HelloWorldJNIwithRegisterNatives {
   // If the framework passed in a specific library, use it.
