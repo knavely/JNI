@@ -55,14 +55,21 @@ fork in run := true
 
 javaOptions in run += "-Djava.library.path=./target/so"
 
-
 resolvers ++= Seq(
-  "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-  "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
-)
+  "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
+  "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases/"
+) 
+
+
 
 libraryDependencies ++= Seq(
   "org.scala-saddle" %% "saddle-core" % "1.3.+",
-  "net.sf.trove4j" % "trove4j" % "3.0.3"
-  // (OPTIONAL) "org.scala-saddle" %% "saddle-hdf5" % "1.3.+"
+  "net.sf.trove4j" % "trove4j" % "3.0.3",
+  "com.twitter" % "algebird-core_2.9.3" % "0.2.0",
+  "com.twitter" % "algebird-util_2.9.3" % "0.2.0",
+  "org.scalanlp" % "breeze-math_2.10" % "0.5-SNAPSHOT",
+  "org.scalanlp" % "breeze-viz_2.10" % "0.5-SNAPSHOT"
+ // (OPTIONAL) "org.scala-saddle" %% "saddle-hdf5" % "1.3.+"
 )
+
+scalaVersion := "2.10.2"
