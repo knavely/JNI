@@ -132,13 +132,13 @@ keyval ** qSort(keyval **array, int start, int end)
   return array;
 }
 
-int binary_search(keyval ** array, int start, int end, char * key)
+void* binary_search(keyval ** array, int start, int end, char * key)
 {
-  if(end < start) return -1;
+  if(end < start) return dictionary_not_found;
   
   else{
     int i = (end - start)/2 + start;
-    if(strcmp(key,array[i]->key)) return i;
+    if(strcmp(key,array[i]->key)) return array[i]->value;
 
     else if(compare(key,array[i]-> key)) return binary_search(array,i+1,end,key);
     else if(!compare(key,array[i]->key)) return binary_search(array,start,i-1,key);
